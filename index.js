@@ -1,3 +1,5 @@
+const service = require('./Lib/service');
+
 module.exports = {
-    Service: require("./lib/service")
-}
+  Service: service,
+};
