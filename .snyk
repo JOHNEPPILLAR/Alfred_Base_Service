@@ -5,12 +5,12 @@ ignore: {}
 patch:
   SNYK-JS-LODASH-567746:
     - request-promise > request-promise-core > lodash:
-        patched: '2020-06-21T14:09:35.599Z'
+        patched: '2020-06-21T16:58:30.659Z'
     - restify > restify-errors > lodash:
-        patched: '2020-06-21T14:09:35.599Z'
+        patched: '2020-06-21T16:58:30.659Z'
     - node-vault > request-promise-native > request-promise-core > lodash:
-        patched: '2020-06-21T14:09:35.599Z'
+        patched: '2020-06-21T16:58:30.659Z'
     - restify > restify-errors > @netflix/nerror > lodash:
-        patched: '2020-06-21T14:09:35.599Z'
+        patched: '2020-06-21T16:58:30.659Z'
     - restify > lodash:
-        patched: '2020-06-21T14:09:35.599Z'
+        patched: '2020-06-21T16:58:30.659Z'
