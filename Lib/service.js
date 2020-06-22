@@ -1,9 +1,7 @@
 /**
  * Import libraries
  */
-const pino = require('pino');
 const restify = require('restify');
-const { Client } = require('pg');
 
 const helper = require('alfred-helper');
 
@@ -104,129 +102,17 @@ class Service {
    ************************* */
 
   /**
-   * Fatal error. Print the message to console and exit the process (if need)
-   *
-   * @param {boolean} [needExit=true]
-   * @param {Error?} err
-   *
-   */
-  _fatal(needExit = true) {
-    if (this.started) {
-      try {
-        this.restifyServer.close(() => {
-          this.logger.info('Stoped accepting API requests');
-        });
-      } catch (err) {
-        this.logger.error(
-          `${this.traceStack(true)} - Unable to shutdown restify server`,
-        );
-      }
-    }
-    this.started = false;
-
-    if (needExit) {
-      this.logger.fatal('Stopping service due to fatal error');
-      process.exit(1);
-    }
-  }
-
-  /**
-   * Setup logger
-   */
-  // eslint-disable-next-line class-methods-use-this
-  _setupLogger() {
-    if (process.env.ENVIRONMENT === 'development') {
-      this.logger = pino({
-        level: 'trace',
-        prettyPrint: {
-          levelFirst: true,
-        },
-      });
-    } else {
-      this.logger = pino();
-    }
-  }
-
-  /**
    * Ping
    */
   _ping(req, res, next) {
-    this.logger.debug(`${this.traceStack()} - Ping API called`);
+    this.logger.debug(`${this._traceStack()} - Ping API called`);
     const ackJSON = { reply: 'pong' };
-    this.sendResponse(res, next, 200, ackJSON);
+    this._sendResponse(res, next, 200, ackJSON);
   }
 
   /** *************************
    * Public functions
    ************************* */
-
-  /**
-   * Trace stack. Print the current function and line number
-   */
-  traceStack(previousFunction) {
-    const originalStack = Error.prepareStackTrace;
-    Error.prepareStackTrace = function prepStack(_, stackTrace) {
-      return stackTrace;
-    };
-    const err = new Error();
-    const { stack } = err;
-    Error.prepareStackTrace = originalStack;
-
-    let stackID = 1;
-    if (previousFunction) stackID = 2;
-
-    try {
-      const functionName = stack[stackID].getFunctionName();
-      const lineNumber = stack[stackID].getLineNumber();
-      this.returnStr = `${
-        functionName !== null ? ` ${functionName}` : ' '
-      }:${lineNumber}`;
-    } catch (e) {
-      this.returnStr = '[No trace data]';
-    }
-    return this.returnStr;
-  }
-
-  /**
-   * Get secret from vault
-   *
-   * @param {String} route
-   * @param {String} key
-   *
-   */
-  async getVaultSecret(route, key) {
-    try {
-      const options = {
-        apiVersion: 'v1',
-        endpoint: process.env.VAULT_URL,
-        token: process.env.VAULT_TOKEN,
-      };
-
-      this.logger.debug(`${this.traceStack()} - Connect to vault`);
-      // eslint-disable-next-line global-require
-      const vault = require('node-vault')(options);
-
-      // Check if vault is sealed
-      this.logger.debug(`${this.traceStack()} - Check vault status`);
-      const vaultStatus = await vault.status();
-      if (vaultStatus.sealed) this._fatal('Vault sealed', true);
-
-      this.logger.debug(`${this.traceStack()} - Get secret from vault`);
-      const vaultData = await vault.read(`secret/alfred/${route}`);
-      if (!helper.isEmptyObject(vaultData.data)) {
-        this.logger.debug(`${this.traceStack()} - Get key from secret`);
-        // eslint-disable-next-line no-prototype-builtins
-        if (vaultData.data.hasOwnProperty(key)) {
-          this.logger.debug(`${this.traceStack()} - Return key`);
-          return vaultData.data[key];
-        }
-      }
-      throw new Error('No key found');
-    } catch (err) {
-      this.logger.error(`${this.traceStack()} - ${err}`);
-      return err;
-    }
-  }
 
   /**
    * Create restify server
@@ -235,8 +121,8 @@ class Service {
     try {
       if (this.started) return;
 
-      this.logger.debug(`${this.traceStack()} - Get key`);
-      const key = await this.getVaultSecret(
+      this.logger.debug(`${this._traceStack()} - Get key`);
+      const key = await this._getVaultSecret(
         process.env.ENVIRONMENT,
         `${this.namespace}_key`,
       );
@@ -244,8 +130,8 @@ class Service {
         this._fatal('Unable to get key', true);
       }
 
-      this.logger.debug(`${this.traceStack()} - Get certificate`);
-      const certificate = await this.getVaultSecret(
+      this.logger.debug(`${this._traceStack()} - Get certificate`);
+      const certificate = await this._getVaultSecret(
         process.env.ENVIRONMENT,
         `${this.namespace}_cert`,
       );
@@ -253,8 +139,8 @@ class Service {
         this._fatal('Unable to get certificate', true);
       }
 
-      this.logger.debug(`${this.traceStack()} - Get client access key`);
-      this.apiAccessKey = await this.getVaultSecret(
+      this.logger.debug(`${this._traceStack()} - Get client access key`);
+      this.apiAccessKey = await this._getVaultSecret(
         process.env.ENVIRONMENT,
         'ClientAccessKey',
       );
@@ -263,7 +149,7 @@ class Service {
       }
 
       // Restify server Init
-      this.logger.debug(`${this.traceStack()} - Create restify server`);
+      this.logger.debug(`${this._traceStack()} - Create restify server`);
       this.restifyServer = restify.createServer({
         name: this.serviceName,
         version: this.serviceVersion,
@@ -272,7 +158,7 @@ class Service {
       });
 
       // Set response headers
-      this.logger.debug(`${this.traceStack()} - Set response headers`);
+      this.logger.debug(`${this._traceStack()} - Set response headers`);
       this.restifyServer.use((req, res, next) => {
         res.setHeader(
           'Content-Security-Policy',
@@ -292,11 +178,11 @@ class Service {
       // Log any 404's
       this.restifyServer.on('NotFound', (req, res, err, next) => {
         this.logger.error(` notFound - ${err.message}`);
-        this.sendResponse(res, next, 404, err);
+        this._sendResponse(res, next, 404, err);
       });
 
       // Setup middleware
-      this.logger.debug(`${this.traceStack()} - Setup middleware`);
+      this.logger.debug(`${this._traceStack()} - Setup middleware`);
       this.restifyServer.use(
         restify.plugins.jsonBodyParser({ mapParams: true }),
       );
@@ -307,7 +193,7 @@ class Service {
       this.restifyServer.use(restify.plugins.fullResponse());
 
       // Setup API requiest logging
-      this.logger.debug(`${this.traceStack()} - Setup API requiest logging`);
+      this.logger.debug(`${this._traceStack()} - Setup API requiest logging`);
       this.restifyServer.use((req, res, next) => {
         this.logger.trace(`URL: ${req.url}`);
         if (!helper.isEmptyObject(req.params)) {
@@ -332,7 +218,7 @@ class Service {
           this.logger.trace(
             'No or invaid client access key received in request',
           );
-          this.sendResponse(
+          this._sendResponse(
             res,
             next,
             401,
@@ -344,12 +230,12 @@ class Service {
       });
 
       // Setup base API's
-      this.logger.debug(`${this.traceStack()} - Setup base API's`);
+      this.logger.debug(`${this._traceStack()} - Setup base API's`);
       this.restifyServer.get('/ping', (req, res, next) =>
         this._ping(req, res, next),
       );
 
-      this.logger.debug(`${this.traceStack()} - Finished base restify setup`);
+      this.logger.debug(`${this._traceStack()} - Finished base restify setup`);
     } catch (err) {
       this._fatal(err.message, true);
     }
@@ -360,14 +246,14 @@ class Service {
    */
   listen() {
     if (this.started) {
-      this.logger.debug(`${this.traceStack()} - Already started`);
+      this.logger.debug(`${this._traceStack()} - Already started`);
       return;
     }
 
     // Start service and listen to requests
     try {
       this.logger.debug(
-        `${this.traceStack()} - Set server to listen for requests`,
+        `${this._traceStack()} - Set server to listen for requests`,
       );
       this.restifyServer.listen(process.env.PORT || 3978, () => {
         this.logger.info(`${this.restifyServer.name} - has started`);
@@ -378,70 +264,40 @@ class Service {
     }
   }
 
-  /**
-   * Send response back to caller
-   */
-  sendResponse(res, next, status, dataObj) {
-    let httpHeaderCode;
-    let rtnData = dataObj;
+  // Check google cal to see if kids are staying
+  // eslint-disable-next-line class-methods-use-this
+  async kidsAtHomeToday() {
+    try {
+      const events = await this._getGoogleCal(
+        'Girls @ JP',
+        'GoogleAPICalendarID',
+      );
+      if (events instanceof Error) return events;
 
-    switch (status) {
-      case 500: // Internal server error
-        httpHeaderCode = 500;
-        rtnData = { error: dataObj.message };
-        break;
-      case 400: // Invalid params
-        httpHeaderCode = 400;
-        rtnData = { error: dataObj.message };
-        break;
-      case 401: // Not authorised, invalid app_key
-        httpHeaderCode = 401;
-        rtnData = { error: dataObj };
-        break;
-      case 404: // Resource not found
-        httpHeaderCode = 404;
-        rtnData = { error: dataObj.message };
-        break;
-      default:
-        httpHeaderCode = 200;
+      // Process calendar events
+      if (events.length > 0) {
+        this.logger.debug(`${this._traceStack()} - Girls staying @ JP's today`);
+        return true;
+      }
+      this.logger.debug(
+        `${this._traceStack()} - Girls not staying @ JP's today`,
+      );
+      return false;
+    } catch (err) {
+      this.logger.error(`${this._traceStack()} - ${err.message}`);
+      return err;
     }
-    this.logger.debug(
-      `${this.traceStack()} - Finished api processing, sending data back to caller`,
-    );
-    res.json(httpHeaderCode, rtnData);
-    next(false); // End call chain
-  }
-
-  /**
-   * Connect to database
-   */
-  async connectToDB(database) {
-    this.logger.debug(`${this.traceStack()} - Getting databse login details`);
-    const DataStore = await this.getVaultSecret(
-      process.env.ENVIRONMENT,
-      'DataStore',
-    );
-    const DataStoreUser = await this.getVaultSecret(
-      process.env.ENVIRONMENT,
-      'DataStoreUser',
-    );
-    const DataStoreUserPassword = await this.getVaultSecret(
-      process.env.ENVIRONMENT,
-      'DataStoreUserPassword',
-    );
-    this.logger.debug(`${this.traceStack()} - Create databse object`);
-    const dataClient = new Client({
-      host: DataStore,
-      database,
-      user: DataStoreUser,
-      password: DataStoreUserPassword,
-      port: 5432,
-    });
-    this.logger.debug(`${this.traceStack()} - Connect to databse`);
-    await dataClient.connect();
-    return dataClient;
   }
 }
+
+/**
+ * Bind extention functions to base class
+ */
+Object.assign(Service.prototype, require('./logging'));
+Object.assign(Service.prototype, require('./response'));
+Object.assign(Service.prototype, require('./vault'));
+Object.assign(Service.prototype, require('./database'));
+
 /**
  * Default configuration
  */
