@@ -3,6 +3,8 @@
  */
 const pino = require('pino');
 const restify = require('restify');
+const { Client } = require('pg');
+
 const helper = require('alfred-helper');
 
 // Config from package.json
@@ -177,7 +179,7 @@ class Service {
       const functionName = stack[stackID].getFunctionName();
       const lineNumber = stack[stackID].getLineNumber();
       this.returnStr = `${
-        functionName !== null ? ` ${functionName}` : ''
+        functionName !== null ? ` ${functionName}` : ' '
       }:${lineNumber}`;
     } catch (e) {
       this.returnStr = '[No trace data]';
@@ -354,22 +356,6 @@ class Service {
   }
 
   /**
-   * Add api route to restify server
-   */
-  addRouteToRestify(type, route, callingFunction) {
-    try {
-      this.restifyServer[type](route, (req, res, next) =>
-        callingFunction.call(this, req, res, next),
-      );
-      this.logger.debug(
-        `${this.traceStack()} - Added '${route}' to restify server`,
-      );
-    } catch (err) {
-      this.logger.error(`${this.traceStack()} - ${err}`);
-    }
-  }
-
-  /**
    * Start restify server
    */
   listen() {
@@ -425,8 +411,37 @@ class Service {
     res.json(httpHeaderCode, rtnData);
     next(false); // End call chain
   }
-}
 
+  /**
+   * Connect to database
+   */
+  async connectToDB(database) {
+    this.logger.debug(`${this.traceStack()} - Getting databse login details`);
+    const DataStore = await this.getVaultSecret(
+      process.env.ENVIRONMENT,
+      'DataStore',
+    );
+    const DataStoreUser = await this.getVaultSecret(
+      process.env.ENVIRONMENT,
+      'DataStoreUser',
+    );
+    const DataStoreUserPassword = await this.getVaultSecret(
+      process.env.ENVIRONMENT,
+      'DataStoreUserPassword',
+    );
+    this.logger.debug(`${this.traceStack()} - Create databse object`);
+    const dataClient = new Client({
+      host: DataStore,
+      database,
+      user: DataStoreUser,
+      password: DataStoreUserPassword,
+      port: 5432,
+    });
+    this.logger.debug(`${this.traceStack()} - Connect to databse`);
+    await dataClient.connect();
+    return dataClient;
+  }
+}
 /**
  * Default configuration
  */
