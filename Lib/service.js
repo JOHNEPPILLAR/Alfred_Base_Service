@@ -263,31 +263,6 @@ class Service {
       this._fatal(err.message, true);
     }
   }
-
-  // Check google cal to see if kids are staying
-  // eslint-disable-next-line class-methods-use-this
-  async kidsAtHomeToday() {
-    try {
-      const events = await this._getGoogleCal(
-        'Girls @ JP',
-        'GoogleAPICalendarID',
-      );
-      if (events instanceof Error) return events;
-
-      // Process calendar events
-      if (events.length > 0) {
-        this.logger.debug(`${this._traceStack()} - Girls staying @ JP's today`);
-        return true;
-      }
-      this.logger.debug(
-        `${this._traceStack()} - Girls not staying @ JP's today`,
-      );
-      return false;
-    } catch (err) {
-      this.logger.error(`${this._traceStack()} - ${err.message}`);
-      return err;
-    }
-  }
 }
 
 /**
@@ -297,6 +272,8 @@ Object.assign(Service.prototype, require('./logging'));
 Object.assign(Service.prototype, require('./response'));
 Object.assign(Service.prototype, require('./vault'));
 Object.assign(Service.prototype, require('./database'));
+Object.assign(Service.prototype, require('./callAPI'));
+Object.assign(Service.prototype, require('./google'));
 
 /**
  * Default configuration

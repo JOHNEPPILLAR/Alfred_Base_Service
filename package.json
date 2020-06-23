@@ -14,16 +14,21 @@
     "test": "snyk test"
   },
   "dependencies": {
+    "ajv": "^6.12.2",
     "alfred-helper": "git://github.com/johneppillar/alfred_helper",
     "dotenv": "^8.2.0",
     "node-schedule": "^1.3.2",
     "node-vault": "^0.9.18",
+    "request": "^2.88.2",
+    "request-promise": "^4.2.5",
+    "pg": "^8.2.1",
     "pino": "^6.3.2",
     "pino-pretty": "^4.0.0",
     "restify": "^8.5.1",
     "restify-router": "^0.5.1",
-    "pg": "^8.2.1",
-    "snyk": "^1.346.0"
+    "googleapis": "^52.1.0",
+    "moment": "^2.27.0",
+    "snyk": "^1.347.1"
   },
   "devDependencies": {
     "eslint": "~7.2.0",

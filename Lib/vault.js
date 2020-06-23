@@ -10,7 +10,6 @@ const helper = require('alfred-helper');
  * @param {String} key
  *
  */
-// eslint-disable-next-line no-underscore-dangle
 async function _getVaultSecret(route, key) {
   try {
     const options = {
