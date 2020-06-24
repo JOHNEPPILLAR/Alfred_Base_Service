@@ -13,7 +13,7 @@ const moment = require('moment');
  */
 async function _getGoogleCal(query, callID) {
   try {
-    let credentials = await this._getvaultSecret(
+    let credentials = await this._getVaultSecret(
       process.env.ENVIRONMENT,
       'GoogleAPIKey',
     );
@@ -28,15 +28,15 @@ async function _getGoogleCal(query, callID) {
     );
 
     // Authenticate request
-    log('trace', 'Login to Google API');
+    this.logger.debug(`${this._traceStack()} - Login to Google API`);
     await jwtClient.authorize();
-    log('trace', 'Connected to Google API');
+    this.logger.debug(`${this._traceStack()} - Connected to Google API`);
 
-    const googleAPICalendarID = await this._getvaultSecret(
+    const googleAPICalendarID = await this._getVaultSecret(
       process.env.ENVIRONMENT,
       callID,
     );
-    log('trace', `Check if ${query}`);
+    this.logger.debug(`${this._traceStack()} - Check if ${query}`);
     const calendar = google.calendar('v3');
     const events = await calendar.events.list({
       auth: jwtClient,

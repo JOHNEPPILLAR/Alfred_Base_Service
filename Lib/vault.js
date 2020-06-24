@@ -25,8 +25,7 @@ async function _getVaultSecret(route, key) {
     // Check if vault is sealed
     this.logger.debug(`${this._traceStack()} - Check vault status`);
     const vaultStatus = await vault.status();
-    if (vaultStatus.sealed) this._fatal('Vault sealed', true);
-
+    if (vaultStatus.sealed) this._fatal('Vault sealed', false);
     this.logger.debug(`${this._traceStack()} - Get secret from vault`);
     const vaultData = await vault.read(`secret/alfred/${route}`);
     if (!helper.isEmptyObject(vaultData.data)) {

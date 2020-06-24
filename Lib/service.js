@@ -98,19 +98,6 @@ class Service {
   }
 
   /** *************************
-   * Private functions
-   ************************* */
-
-  /**
-   * Ping
-   */
-  _ping(req, res, next) {
-    this.logger.debug(`${this._traceStack()} - Ping API called`);
-    const ackJSON = { reply: 'pong' };
-    this._sendResponse(res, next, 200, ackJSON);
-  }
-
-  /** *************************
    * Public functions
    ************************* */
 
@@ -273,6 +260,7 @@ Object.assign(Service.prototype, require('./response'));
 Object.assign(Service.prototype, require('./vault'));
 Object.assign(Service.prototype, require('./database'));
 Object.assign(Service.prototype, require('./callAPI'));
+Object.assign(Service.prototype, require('./schedules'));
 Object.assign(Service.prototype, require('./google'));
 
 /**

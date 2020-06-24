@@ -74,7 +74,7 @@ function _validateSchema(req, schema) {
   const valid = ajv.validate(schema, req.params);
   if (!valid) {
     this.logger.trace(
-      `${this.traceStack()} - Invalid params: ${JSON.stringify(req.params)}`,
+      `${this._traceStack()} - Invalid params: ${JSON.stringify(req.params)}`,
     );
     return _schemaErrorResponse(ajv.errors);
   }
