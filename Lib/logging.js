@@ -75,7 +75,9 @@ function _setupLogger() {
       },
     });
   } else {
-    this.logger = pino();
+    this.logger = pino({
+      level: 'trace',
+    });
   }
 }
 

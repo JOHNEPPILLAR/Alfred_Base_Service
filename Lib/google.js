@@ -3,6 +3,7 @@
  */
 const { google } = require('googleapis');
 const moment = require('moment');
+const geolib = require('geolib');
 
 /**
  * Get Google calendar
@@ -78,7 +79,47 @@ async function _kidsAtHomeToday() {
   }
 }
 
+/**
+ * Check to see if caller is in home geo fence
+ *
+ * @param {Int} lat
+ * @param {Int} Long
+ *
+ */
+async function _inHomeGeoFence(lat, long) {
+  const geoHome = await this._getVaultSecret(
+    process.env.ENVIRONMENT,
+    'geoHome',
+  );
+  const geoFenceHomeData = JSON.parse(geoHome);
+  return geolib.isPointInPolygon(
+    { latitude: lat, longitude: long },
+    geoFenceHomeData,
+  );
+}
+
+/**
+ * Check to see if caller is in home geo fence
+ *
+ * @param {Int} lat
+ * @param {Int} Long
+ *
+ */
+async function _inJPWorkGeoFence(lat, long) {
+  const geoJPWork = await this._getVaultSecret(
+    process.env.ENVIRONMENT,
+    'geoJPWork',
+  );
+  const geoFenceHomeData = JSON.parse(geoJPWork);
+  return geolib.isPointInPolygon(
+    { latitude: lat, longitude: long },
+    geoFenceHomeData,
+  );
+}
+
 module.exports = {
   _getGoogleCal,
   _kidsAtHomeToday,
+  _inHomeGeoFence,
+  _inJPWorkGeoFence,
 };
