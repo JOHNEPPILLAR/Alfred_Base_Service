@@ -84,7 +84,9 @@ class Service {
         this.logger.error(`Uncaught exception: ${err}`);
       });
       process.on('unhandledRejection', (reason, p) => {
-        this.logger.error(`Unhandled rejection at promise:: ${p} - ${reason}`);
+        this.logger.error(
+          `Unhandled rejection at promise:: ${this._traceStack()} - ${p} - ${reason}`,
+        );
       });
     } catch (err) {
       if (this.logger) {

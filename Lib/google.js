@@ -59,6 +59,30 @@ async function _getGoogleCal(query, callID) {
 /**
  * Check google calendar to see if kids are staying
  */
+async function _workingFromHomeToday() {
+  try {
+    const events = await this._getGoogleCal(
+      'JP work from home',
+      'JPGoogleAPICalendarID',
+    );
+    if (events instanceof Error) return events;
+
+    // Process calendar events
+    if (events.length > 0) {
+      this.logger.debug(`${this._traceStack()} - Working from home today`);
+      return true;
+    }
+    this.logger.debug(`${this._traceStack()} - Not working from home today`);
+    return false;
+  } catch (err) {
+    this.logger.error(`${this._traceStack()} - ${err.message}`);
+    return err;
+  }
+}
+
+/**
+ * Check google calendar to see if kids are staying
+ */
 async function _kidsAtHomeToday() {
   try {
     const events = await this._getGoogleCal(
@@ -162,6 +186,7 @@ async function _isBankHolidayWeekend() {
 
 module.exports = {
   _getGoogleCal,
+  _workingFromHomeToday,
   _kidsAtHomeToday,
   _inHomeGeoFence,
   _inJPWorkGeoFence,
