@@ -119,7 +119,7 @@ async function _inJPWorkGeoFence(lat, long) {
 }
 
 /**
- * Check if it's a weekend or bacnk holiday
+ * Check if it's a weekend or bank holiday
  */
 async function _isBankHolidayWeekend() {
   this.logger.debug(
