@@ -18,7 +18,7 @@ function _ping(req, res, next) {
 }
 
 /**
- * Call another api service
+ * Call another api service with Get
  *
  * @param {String} URL
  *
@@ -28,6 +28,30 @@ async function _callAPIServiceGet(apiURL) {
     method: 'GET',
     uri: apiURL,
     json: true,
+  };
+  try {
+    return await rp(options);
+  } catch (err) {
+    return err;
+  }
+}
+
+/**
+ * Call another api service with Put
+ *
+ * @param {String} URL
+ * @param {String} Body
+ *
+ */
+async function _callAPIServicePut(apiURL, body) {
+  const options = {
+    method: 'POST',
+    uri: apiURL,
+    json: true,
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body,
   };
   try {
     return await rp(options);
@@ -64,5 +88,6 @@ async function _callAlfredServiceGet(apiURL) {
 module.exports = {
   _ping,
   _callAPIServiceGet,
+  _callAPIServicePut,
   _callAlfredServiceGet,
 };
