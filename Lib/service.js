@@ -264,6 +264,7 @@ Object.assign(Service.prototype, require('./database'));
 Object.assign(Service.prototype, require('./callAPI'));
 Object.assign(Service.prototype, require('./schedules'));
 Object.assign(Service.prototype, require('./google'));
+Object.assign(Service.prototype, require('./apple'));
 
 /**
  * Default configuration
