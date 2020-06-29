@@ -12,7 +12,7 @@ const rp = require('request-promise');
  *
  */
 function _ping(req, res, next) {
-  this.logger.debug(`${this._traceStack()} - Ping API called`);
+  this.logger.trace(`${this._traceStack()} - Ping API called`);
   const ackJSON = { reply: 'pong' };
   this._sendResponse(res, next, 200, ackJSON);
 }
