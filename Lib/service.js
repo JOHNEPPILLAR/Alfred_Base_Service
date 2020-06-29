@@ -110,7 +110,7 @@ class Service {
     try {
       if (this.started) return;
 
-      this.logger.debug(`${this._traceStack()} - Get key`);
+      this.logger.trace(`${this._traceStack()} - Get key`);
       const key = await this._getVaultSecret(
         process.env.ENVIRONMENT,
         `${this.namespace}_key`,
@@ -119,7 +119,7 @@ class Service {
         this._fatal('Unable to get key', true);
       }
 
-      this.logger.debug(`${this._traceStack()} - Get certificate`);
+      this.logger.trace(`${this._traceStack()} - Get certificate`);
       const certificate = await this._getVaultSecret(
         process.env.ENVIRONMENT,
         `${this.namespace}_cert`,
@@ -128,7 +128,7 @@ class Service {
         this._fatal('Unable to get certificate', true);
       }
 
-      this.logger.debug(`${this._traceStack()} - Get client access key`);
+      this.logger.trace(`${this._traceStack()} - Get client access key`);
       this.apiAccessKey = await this._getVaultSecret(
         process.env.ENVIRONMENT,
         'ClientAccessKey',
@@ -138,7 +138,7 @@ class Service {
       }
 
       // Restify server Init
-      this.logger.debug(`${this._traceStack()} - Create restify server`);
+      this.logger.trace(`${this._traceStack()} - Create restify server`);
       this.restifyServer = restify.createServer({
         name: this.serviceName,
         version: this.serviceVersion,
@@ -147,7 +147,7 @@ class Service {
       });
 
       // Set response headers
-      this.logger.debug(`${this._traceStack()} - Set response headers`);
+      this.logger.trace(`${this._traceStack()} - Set response headers`);
       this.restifyServer.use((req, res, next) => {
         res.setHeader(
           'Content-Security-Policy',
@@ -171,7 +171,7 @@ class Service {
       });
 
       // Setup middleware
-      this.logger.debug(`${this._traceStack()} - Setup middleware`);
+      this.logger.trace(`${this._traceStack()} - Setup middleware`);
       this.restifyServer.use(
         restify.plugins.jsonBodyParser({ mapParams: true }),
       );
@@ -182,7 +182,7 @@ class Service {
       this.restifyServer.use(restify.plugins.fullResponse());
 
       // Setup API requiest logging
-      this.logger.debug(`${this._traceStack()} - Setup API requiest logging`);
+      this.logger.trace(`${this._traceStack()} - Setup API requiest logging`);
       this.restifyServer.use((req, res, next) => {
         this.logger.trace(`URL: ${req.url}`);
         if (!helper.isEmptyObject(req.params)) {
@@ -219,12 +219,12 @@ class Service {
       });
 
       // Setup base API's
-      this.logger.debug(`${this._traceStack()} - Setup base API's`);
+      this.logger.trace(`${this._traceStack()} - Setup base API's`);
       this.restifyServer.get('/ping', (req, res, next) =>
         this._ping(req, res, next),
       );
 
-      this.logger.debug(`${this._traceStack()} - Finished base restify setup`);
+      this.logger.trace(`${this._traceStack()} - Finished base restify setup`);
     } catch (err) {
       this._fatal(err.message, true);
     }
@@ -235,13 +235,13 @@ class Service {
    */
   listen() {
     if (this.started) {
-      this.logger.debug(`${this._traceStack()} - Already started`);
+      this.logger.trace(`${this._traceStack()} - Already started`);
       return;
     }
 
     // Start service and listen to requests
     try {
-      this.logger.debug(
+      this.logger.trace(
         `${this._traceStack()} - Set server to listen for requests`,
       );
       this.restifyServer.listen(process.env.PORT || 3978, () => {

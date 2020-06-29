@@ -8,7 +8,7 @@ const { Client } = require('pg');
  */
 // eslint-disable-next-line no-underscore-dangle
 async function _connectToDB(database) {
-  this.logger.debug(`${this._traceStack()} - Getting databse login details`);
+  this.logger.trace(`${this._traceStack()} - Getting databse login details`);
   const DataStore = await this._getVaultSecret(
     process.env.ENVIRONMENT,
     'DataStore',
@@ -21,7 +21,7 @@ async function _connectToDB(database) {
     process.env.ENVIRONMENT,
     'DataStoreUserPassword',
   );
-  this.logger.debug(`${this._traceStack()} - Create databse object`);
+  this.logger.trace(`${this._traceStack()} - Create databse object`);
   const dataClient = new Client({
     host: DataStore,
     database,
@@ -29,7 +29,7 @@ async function _connectToDB(database) {
     password: DataStoreUserPassword,
     port: 5432,
   });
-  this.logger.debug(`${this._traceStack()} - Connect to databse`);
+  this.logger.trace(`${this._traceStack()} - Connect to databse`);
   await dataClient.connect();
   return dataClient;
 }

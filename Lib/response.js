@@ -36,7 +36,7 @@ function _sendResponse(res, next, status, dataObj) {
     default:
       httpHeaderCode = 200;
   }
-  this.logger.debug(
+  this.logger.trace(
     `${this._traceStack()} - Finished api processing, sending data back to caller`,
   );
   res.json(httpHeaderCode, rtnData);
@@ -73,7 +73,7 @@ function _validateSchema(req, schema) {
   const ajv = Ajv({ allErrors: true, strictDefaults: true });
   const valid = ajv.validate(schema, req.params);
   if (!valid) {
-    this.logger.trace(
+    this.logger.debug(
       `${this._traceStack()} - Invalid params: ${JSON.stringify(req.params)}`,
     );
     return _schemaErrorResponse(ajv.errors);

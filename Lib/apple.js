@@ -15,15 +15,15 @@ async function _sendPushNotification(notificationText) {
     const pushSQL =
       'SELECT last(device_token, time) as device_token FROM ios_devices';
 
-    this.logger.debug(
+    this.logger.trace(
       `${this._traceStack()} - Connect to data store connection pool`,
     );
     const dbConnection = await this._connectToDB('devices');
 
-    this.logger.debug(`${this._traceStack()} - Get IOS devices`);
+    this.logger.trace(`${this._traceStack()} - Get IOS devices`);
     const devicesToNotify = await dbConnection.query(pushSQL);
 
-    this.logger.debug(
+    this.logger.trace(
       `${this._traceStack()} - Release the data store connection back to the pool`,
     );
     await dbConnection.end(); // Close data store connection
@@ -34,7 +34,7 @@ async function _sendPushNotification(notificationText) {
     } // Exit function as no devices to process
 
     // Send iOS notifications what watering has started
-    this.logger.debug(
+    this.logger.trace(
       `${this._traceStack()} - Build list of devices to send push notification to`,
     );
     devicesToNotify.rows.map((device) =>
@@ -77,7 +77,7 @@ async function _sendPushNotification(notificationText) {
       production: false,
     });
 
-    this.logger.debug(`${this._traceStack()} - Send push notification(s)`);
+    this.logger.trace(`${this._traceStack()} - Send push notification(s)`);
     const notification = new apn.Notification();
     notification.topic = 'JP.Alfred';
     notification.expiry = Math.floor(Date.now() / 1000) + 600; // Expires 10 minutes from now.
@@ -92,7 +92,7 @@ async function _sendPushNotification(notificationText) {
       );
     }
 
-    this.logger.debug(
+    this.logger.trace(
       `${this._traceStack()} - Close down connection to push notification service`,
     );
     await apnProvider.shutdown(); // Close the connection with apn

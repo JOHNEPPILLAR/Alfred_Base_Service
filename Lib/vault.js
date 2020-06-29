@@ -18,21 +18,21 @@ async function _getVaultSecret(route, key) {
       token: process.env.VAULT_TOKEN,
     };
 
-    this.logger.debug(`${this._traceStack()} - Connect to vault`);
+    this.logger.trace(`${this._traceStack()} - Connect to vault`);
     // eslint-disable-next-line global-require
     const vault = require('node-vault')(options);
 
     // Check if vault is sealed
-    this.logger.debug(`${this._traceStack()} - Check vault status`);
+    this.logger.trace(`${this._traceStack()} - Check vault status`);
     const vaultStatus = await vault.status();
     if (vaultStatus.sealed) this._fatal('Vault sealed', false);
-    this.logger.debug(`${this._traceStack()} - Get secret from vault`);
+    this.logger.trace(`${this._traceStack()} - Get secret from vault`);
     const vaultData = await vault.read(`secret/alfred/${route}`);
     if (!helper.isEmptyObject(vaultData.data)) {
-      this.logger.debug(`${this._traceStack()} - Get key from secret`);
+      this.logger.trace(`${this._traceStack()} - Get key from secret`);
       // eslint-disable-next-line no-prototype-builtins
       if (vaultData.data.hasOwnProperty(key)) {
-        this.logger.debug(`${this._traceStack()} - Return key`);
+        this.logger.trace(`${this._traceStack()} - Return key`);
         return vaultData.data[key];
       }
     }

@@ -30,15 +30,15 @@ async function _getGoogleCal(query, callID) {
     );
 
     // Authenticate request
-    this.logger.debug(`${this._traceStack()} - Login to Google API`);
+    this.logger.trace(`${this._traceStack()} - Login to Google API`);
     await jwtClient.authorize();
-    this.logger.debug(`${this._traceStack()} - Connected to Google API`);
+    this.logger.trace(`${this._traceStack()} - Connected to Google API`);
 
     const googleAPICalendarID = await this._getVaultSecret(
       process.env.ENVIRONMENT,
       callID,
     );
-    this.logger.debug(`${this._traceStack()} - Check if ${query}`);
+    this.logger.trace(`${this._traceStack()} - Check if ${query}`);
     const calendar = google.calendar('v3');
     const events = await calendar.events.list({
       auth: jwtClient,
@@ -69,10 +69,10 @@ async function _workingFromHomeToday() {
 
     // Process calendar events
     if (events.length > 0) {
-      this.logger.debug(`${this._traceStack()} - Working from home today`);
+      this.logger.trace(`${this._traceStack()} - Working from home today`);
       return true;
     }
-    this.logger.debug(`${this._traceStack()} - Not working from home today`);
+    this.logger.trace(`${this._traceStack()} - Not working from home today`);
     return false;
   } catch (err) {
     this.logger.error(`${this._traceStack()} - ${err.message}`);
@@ -93,10 +93,10 @@ async function _kidsAtHomeToday() {
 
     // Process calendar events
     if (events.length > 0) {
-      this.logger.debug(`${this._traceStack()} - Girls staying @ JP's today`);
+      this.logger.trace(`${this._traceStack()} - Girls staying @ JP's today`);
       return true;
     }
-    this.logger.debug(`${this._traceStack()} - Girls not staying @ JP's today`);
+    this.logger.trace(`${this._traceStack()} - Girls not staying @ JP's today`);
     return false;
   } catch (err) {
     this.logger.error(`${this._traceStack()} - ${err.message}`);
@@ -146,7 +146,7 @@ async function _inJPWorkGeoFence(lat, long) {
  * Check if it's a weekend or bank holiday
  */
 async function _isBankHolidayWeekend() {
-  this.logger.debug(
+  this.logger.trace(
     `${this._traceStack()} - Check for bank holidays and weekends`,
   );
   const url = 'https://www.gov.uk/bank-holidays.json';
@@ -154,7 +154,7 @@ async function _isBankHolidayWeekend() {
   const isWeekend = toDay.getDay() === 6 || toDay.getDay() === 0;
 
   if (isWeekend) {
-    this.logger.debug(`${this._traceStack()} - It's the weekend`);
+    this.logger.trace(`${this._traceStack()} - It's the weekend`);
     return true;
   }
 
@@ -177,10 +177,10 @@ async function _isBankHolidayWeekend() {
     (a) => a.date === dateFormat(toDay, 'yyyy-mm-dd'),
   );
   if (bankHolidays.length === 0) {
-    this.logger.debug(`${this._traceStack()} - It's the weekday`);
+    this.logger.trace(`${this._traceStack()} - It's the weekday`);
     return false;
   }
-  this.logger.debug(`${this._traceStack()} - It's ${bankHolidays[0].title}`);
+  this.logger.trace(`${this._traceStack()} - It's ${bankHolidays[0].title}`);
   return true;
 }
 
