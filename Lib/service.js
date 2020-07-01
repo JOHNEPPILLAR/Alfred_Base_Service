@@ -58,6 +58,9 @@ class Service {
       // Logger
       this._setupLogger();
 
+      // Vault
+      this._openVault();
+
       // Schedules
       this.schedules = [];
 
