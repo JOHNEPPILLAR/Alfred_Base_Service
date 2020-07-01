@@ -14,23 +14,28 @@ async function _openVault() {
       token: process.env.VAULT_TOKEN,
     };
 
-    // Check if conected, if not connect to vault
-    if (typeof this.vault === 'undefined' || this.vault === null) {
-      this.logger.trace(`${this._traceStack()} - Connect to vault`);
-      // eslint-disable-next-line global-require
-      this.vault = require('node-vault')(options);
-    }
+    this.logger.trace(`${this._traceStack()} - Connect to vault`);
+    // eslint-disable-next-line global-require
+    const vault = require('node-vault')(options);
 
     // If vault connection error, exit app
-    if (this.vault instanceof Error)
-      this._fatal('Vault connection error', true);
+    if (vault instanceof Error) this._fatal('Vault connection error', true);
 
     // Check if vault is sealed
     this.logger.trace(`${this._traceStack()} - Check vault status`);
-    const vaultStatus = await this.vault.status();
+    const vaultStatus = await vault.status();
     if (vaultStatus.sealed) {
-      // TODO - uneal vault if sealed
       this._fatal('Vault sealed', true);
+    }
+
+    // Get data from vault
+    this.logger.trace(`${this._traceStack()} - Get secret from vault`);
+    const vaultData = await vault.read(
+      `secret/alfred/${process.env.ENVIRONMENT}`,
+    );
+    if (!helper.isEmptyObject(vaultData.data)) {
+      this.logger.trace(`${this._traceStack()} - Store data in memory`);
+      this.vault = vaultData.data;
     }
     this.logger.trace(`${this._traceStack()} - Vault ready`);
   } catch (err) {
@@ -40,28 +45,17 @@ async function _openVault() {
 }
 
 /**
- * Get secret from vault
+ * Get secret
  *
- * @param {String} route
  * @param {String} key
  *
  */
-async function _getVaultSecret(route, key) {
+async function _getVaultSecret(key) {
   try {
-    this.logger.trace(`${this._traceStack()} - Check still connected to vault`);
-    const vaultStatus = await this.vault.status();
-
-    if (vaultStatus instanceof Error || vaultStatus.sealed) _openVault();
-
-    this.logger.trace(`${this._traceStack()} - Get secret from vault`);
-    const vaultData = await this.vault.read(`secret/alfred/${route}`);
-    if (!helper.isEmptyObject(vaultData.data)) {
-      this.logger.trace(`${this._traceStack()} - Get key from secret`);
-      // eslint-disable-next-line no-prototype-builtins
-      if (vaultData.data.hasOwnProperty(key)) {
-        this.logger.trace(`${this._traceStack()} - Return key`);
-        return vaultData.data[key];
-      }
+    // eslint-disable-next-line no-prototype-builtins
+    if (this.vault.hasOwnProperty(key)) {
+      this.logger.trace(`${this._traceStack()} - Key found`);
+      return this.vault[key];
     }
     throw new Error('No key found');
   } catch (err) {

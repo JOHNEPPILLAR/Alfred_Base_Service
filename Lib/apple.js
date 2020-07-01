@@ -44,19 +44,13 @@ async function _sendPushNotification(notificationText) {
     // Connect to apples push notification service and send notifications
     const IOSNotificationKeyID = await this._getVaultSecret.call(
       this,
-      process.env.ENVIRONMENT,
       'IOSNotificationKeyID',
     );
     const IOSNotificationTeamID = await this._getVaultSecret.call(
       this,
-      process.env.ENVIRONMENT,
       'IOSNotificationTeamID',
     );
-    const IOSPushKey = await this._getVaultSecret.call(
-      this,
-      process.env.ENVIRONMENT,
-      'IOSPushKey',
-    );
+    const IOSPushKey = await this._getVaultSecret.call(this, 'IOSPushKey');
     if (
       IOSNotificationKeyID instanceof Error ||
       IOSNotificationTeamID instanceof Error ||

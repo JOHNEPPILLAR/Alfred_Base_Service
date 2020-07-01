@@ -55,14 +55,14 @@ class Service {
       // Service version
       this.serviceVersion = options.serviceVersion || '1.0';
 
-      // Logger
-      this._setupLogger();
-
-      // Vault
-      this._openVault();
-
       // Schedules
       this.schedules = [];
+
+      // Vault
+      this.vault = [];
+
+      // Logger
+      this._setupLogger();
 
       // Finished init
       this.logger.info(
@@ -113,29 +113,23 @@ class Service {
     try {
       if (this.started) return;
 
+      // Get data from Vault
+      await this._openVault();
+
       this.logger.trace(`${this._traceStack()} - Get key`);
-      const key = await this._getVaultSecret(
-        process.env.ENVIRONMENT,
-        `${this.namespace}_key`,
-      );
+      const key = await this._getVaultSecret(`${this.namespace}_key`);
       if (key instanceof Error) {
         this._fatal('Unable to get key', true);
       }
 
       this.logger.trace(`${this._traceStack()} - Get certificate`);
-      const certificate = await this._getVaultSecret(
-        process.env.ENVIRONMENT,
-        `${this.namespace}_cert`,
-      );
+      const certificate = await this._getVaultSecret(`${this.namespace}_cert`);
       if (certificate instanceof Error) {
         this._fatal('Unable to get certificate', true);
       }
 
       this.logger.trace(`${this._traceStack()} - Get client access key`);
-      this.apiAccessKey = await this._getVaultSecret(
-        process.env.ENVIRONMENT,
-        'ClientAccessKey',
-      );
+      this.apiAccessKey = await this._getVaultSecret('ClientAccessKey');
       if (this.apiAccessKey instanceof Error) {
         this._fatal('Unable to get api access key', true);
       }

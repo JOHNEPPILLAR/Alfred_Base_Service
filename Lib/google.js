@@ -15,10 +15,7 @@ const dateFormat = require('dateformat');
  */
 async function _getGoogleCal(query, callID) {
   try {
-    let credentials = await this._getVaultSecret(
-      process.env.ENVIRONMENT,
-      'GoogleAPIKey',
-    );
+    let credentials = await this._getVaultSecret('GoogleAPIKey');
     credentials = JSON.parse(credentials);
 
     // Configure a JWT auth client
@@ -34,10 +31,7 @@ async function _getGoogleCal(query, callID) {
     await jwtClient.authorize();
     this.logger.trace(`${this._traceStack()} - Connected to Google API`);
 
-    const googleAPICalendarID = await this._getVaultSecret(
-      process.env.ENVIRONMENT,
-      callID,
-    );
+    const googleAPICalendarID = await this._getVaultSecret(callID);
     this.logger.trace(`${this._traceStack()} - Check if ${query}`);
     const calendar = google.calendar('v3');
     const events = await calendar.events.list({
@@ -112,10 +106,7 @@ async function _kidsAtHomeToday() {
  *
  */
 async function _inHomeGeoFence(lat, long) {
-  const geoHome = await this._getVaultSecret(
-    process.env.ENVIRONMENT,
-    'geoHome',
-  );
+  const geoHome = await this._getVaultSecret('geoHome');
   const geoFenceHomeData = JSON.parse(geoHome);
   return geolib.isPointInPolygon(
     { latitude: lat, longitude: long },
@@ -131,10 +122,7 @@ async function _inHomeGeoFence(lat, long) {
  *
  */
 async function _inJPWorkGeoFence(lat, long) {
-  const geoJPWork = await this._getVaultSecret(
-    process.env.ENVIRONMENT,
-    'geoJPWork',
-  );
+  const geoJPWork = await this._getVaultSecret('geoJPWork');
   const geoFenceHomeData = JSON.parse(geoJPWork);
   return geolib.isPointInPolygon(
     { latitude: lat, longitude: long },

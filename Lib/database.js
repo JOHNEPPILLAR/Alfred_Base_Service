@@ -9,16 +9,9 @@ const { Client } = require('pg');
 // eslint-disable-next-line no-underscore-dangle
 async function _connectToDB(database) {
   this.logger.trace(`${this._traceStack()} - Getting databse login details`);
-  const DataStore = await this._getVaultSecret(
-    process.env.ENVIRONMENT,
-    'DataStore',
-  );
-  const DataStoreUser = await this._getVaultSecret(
-    process.env.ENVIRONMENT,
-    'DataStoreUser',
-  );
+  const DataStore = await this._getVaultSecret('DataStore');
+  const DataStoreUser = await this._getVaultSecret('DataStoreUser');
   const DataStoreUserPassword = await this._getVaultSecret(
-    process.env.ENVIRONMENT,
     'DataStoreUserPassword',
   );
   this.logger.trace(`${this._traceStack()} - Create databse object`);
