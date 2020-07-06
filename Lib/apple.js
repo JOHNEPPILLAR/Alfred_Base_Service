@@ -68,7 +68,7 @@ async function _sendPushNotification(notificationText) {
         keyId: IOSNotificationKeyID,
         teamId: IOSNotificationTeamID,
       },
-      production: false,
+      production: true,
     });
 
     this.logger.trace(`${this._traceStack()} - Send push notification(s)`);
