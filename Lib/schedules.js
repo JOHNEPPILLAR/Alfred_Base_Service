@@ -6,8 +6,12 @@ const dateFormat = require('dateformat');
 
 function _addSchedule(date, description, functionToCall, ...rest) {
   try {
+    this.logger.trace(`${this._traceStack()} - create schedule object`);
     const schedule = scheduler.scheduleJob(date, () =>
       functionToCall.apply(this, rest),
+    );
+    this.logger.trace(
+      `${this._traceStack()} - Add ${description} schedule to schedules array`,
     );
     this.schedules.push(schedule);
     this.logger.info(
