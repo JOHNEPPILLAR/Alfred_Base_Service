@@ -2,7 +2,6 @@
  * Import libraries
  */
 const restify = require('restify');
-
 const helper = require('alfred-helper');
 
 // Config from package.json
@@ -55,19 +54,21 @@ class Service {
       // Service version
       this.serviceVersion = options.serviceVersion || '1.0';
 
-      // Schedules
-      this.schedules = [];
-
       // Vault
       this.vault = [];
 
       // Logger
       this._setupLogger();
 
-      // Finished init
+      // Start configuration
       this.logger.info(
         `${baseServiceDescription} v${this.baseServiceVersion} is starting...`,
       );
+
+      // Schedules
+      this.schedules = [];
+
+      // Finished init
       this.logger.info(
         `Assigning: ${this.namespace || '<not defined>'} v${
           this.serviceVersion || '<not defined>'
