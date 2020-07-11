@@ -18,11 +18,12 @@ function activateSchedules() {
 
     this.logger.trace('Set daily reset schedule up for tomorrow');
     const date = new Date();
+    date.setDate(date.getDate());
     date.setDate(date.getDate() + 1);
     date.setHours(3);
     date.setMinutes(0);
 
-    scheduler.scheduleJob(date, () => activateSchedules());
+    scheduler.scheduleJob(date, () => activateSchedules.call(this));
     this.logger.info(
       `Daily reset schedule will run at ${dateFormat(
         date,
