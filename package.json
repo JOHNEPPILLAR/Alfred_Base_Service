@@ -22,16 +22,16 @@
     "request": "^2.88.2",
     "request-promise": "^4.2.5",
     "pg": "^8.3.0",
-    "pino": "^6.3.2",
-    "pino-pretty": "^4.0.0",
+    "pino": "^6.4.0",
+    "pino-pretty": "^4.0.3",
     "restify": "^8.5.1",
-    "restify-router": "^0.5.1",
-    "googleapis": "^52.1.0",
+    "restify-router": "^0.6.0",
+    "googleapis": "^54.1.0",
     "moment": "^2.27.0",
     "dateformat": "^3.0.3",
     "geolib": "^3.3.1",
     "apn": "^2.2.0",
-    "snyk": "^1.361.3"
+    "snyk": "^1.362.0"
   },
   "devDependencies": {
     "eslint": "~7.4.0",
@@ -43,7 +43,7 @@
     "eslint-plugin-jsx-a11y": "^6.3.1",
     "eslint-plugin-prettier": "^3.1.4",
     "eslint-plugin-react": "^7.20.3",
-    "eslint-plugin-react-hooks": "^4.0.6",
+    "eslint-plugin-react-hooks": "^4.0.8",
     "prettier": "^2.0.5"
   }
 }
