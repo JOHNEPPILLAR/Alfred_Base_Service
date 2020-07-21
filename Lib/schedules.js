@@ -8,8 +8,11 @@ function activateSchedules() {
   try {
     this.logger.info("Setup today's schedules");
     this.schedules.map(async (schedule) => {
+      const date = new Date();
+      date.setHours(schedule.date.getHours());
+      date.setMinutes(schedule.date.getMinutes());
       this.addSchedule(
-        schedule.date,
+        date,
         schedule.description,
         schedule.functionToCall,
         schedule.args,
@@ -17,16 +20,15 @@ function activateSchedules() {
     });
 
     this.logger.trace('Set daily reset schedule up for tomorrow');
-    const date = new Date();
-    date.setDate(date.getDate());
-    date.setDate(date.getDate() + 1);
-    date.setHours(3);
-    date.setMinutes(0);
+    const tomorrowDate = new Date();
+    tomorrowDate.setDate(tomorrowDate.getDate() + 1);
+    tomorrowDate.setHours(3);
+    tomorrowDate.setMinutes(0);
 
-    scheduler.scheduleJob(date, () => activateSchedules.call(this));
+    scheduler.scheduleJob(tomorrowDate, () => activateSchedules.call(this));
     this.logger.info(
       `Daily reset schedule will run at ${dateFormat(
-        date,
+        tomorrowDate,
         'dd-mm-yyyy @ HH:MM',
       )}`,
     );
