@@ -76,7 +76,7 @@ function _setupLogger() {
     });
   } else {
     this.logger = pino({
-      level: process.env.TRACELEVEL,
+      level: process.env.TRACE_LEVEL || 'debug',
     });
   }
 }
