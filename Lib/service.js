@@ -201,10 +201,12 @@ class Service {
           req.headers['client-access-key'] !== this.apiAccessKey &&
           req.query.clientaccesskey !== this.apiAccessKey
         ) {
-          // No key, send error back to caller
-          this.logger.trace(
-            'No or invaid client access key received in request',
-          );
+          if (req.url !== '/ping') {
+            // No key and not a ping test
+            this.logger.trace(
+              'No or invaid client access key received in request',
+            );
+          }
           this._sendResponse(
             res,
             next,
