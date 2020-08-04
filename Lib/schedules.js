@@ -8,11 +8,9 @@ function activateSchedules() {
   try {
     this.logger.info("Setup today's schedules");
     this.schedules.map(async (schedule) => {
-      const date = new Date();
-      date.setHours(schedule.date.getHours());
-      date.setMinutes(schedule.date.getMinutes());
       this.addSchedule(
-        date,
+        schedule.hour,
+        schedule.minute,
         schedule.description,
         schedule.functionToCall,
         schedule.args,
@@ -25,7 +23,7 @@ function activateSchedules() {
     tomorrowDate.setHours(3);
     tomorrowDate.setMinutes(0);
 
-    scheduler.scheduleJob(tomorrowDate, () => activateSchedules.call(this));
+    scheduler.scheduleJob(tomorrowDate, () => this.setupSchedules.call(this));
     this.logger.info(
       `Daily reset schedule will run at ${dateFormat(
         tomorrowDate,
@@ -37,9 +35,14 @@ function activateSchedules() {
   }
 }
 
-function addSchedule(date, description, functionToCall, ...rest) {
+function addSchedule(hour, minute, description, functionToCall, ...rest) {
   try {
     this.logger.trace(`${this._traceStack()} - Create schedule object`);
+
+    const date = new Date();
+    date.setHours(hour);
+    date.setMinutes(minute);
+
     scheduler.scheduleJob(date, () => functionToCall.apply(this, rest));
     this.logger.trace(
       `${this._traceStack()} - Add ${description} schedule to schedules array`,
