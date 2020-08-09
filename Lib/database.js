@@ -14,7 +14,7 @@ async function _connectToDB(database) {
   const DataStoreUserPassword = await this._getVaultSecret(
     'DataStoreUserPassword',
   );
-  this.logger.trace(`${this._traceStack()} - Create databse object`);
+  this.logger.trace(`${this._traceStack()} - Create database object`);
   const dataClient = new Client({
     host: DataStore,
     database,
@@ -22,7 +22,7 @@ async function _connectToDB(database) {
     password: DataStoreUserPassword,
     port: 5432,
   });
-  this.logger.trace(`${this._traceStack()} - Connect to databse`);
+  this.logger.trace(`${this._traceStack()} - Connect to database`);
   await dataClient.connect();
   return dataClient;
 }
