@@ -3,6 +3,7 @@
  */
 const restify = require('restify');
 const helper = require('alfred-helper');
+const path = require('path');
 
 // Config from package.json
 const baseServiceDescription = require('../package.json').description;
@@ -197,9 +198,11 @@ class Service {
 
       this.restifyServer.use(async (req, res, next) => {
         // Check for valid auth key
+        const fileExt = path.extname(req.url).toLowerCase();
         if (
           req.headers['client-access-key'] !== this.apiAccessKey &&
-          req.query.clientaccesskey !== this.apiAccessKey
+          req.query.clientaccesskey !== this.apiAccessKey &&
+          fileExt !== '.ts'
         ) {
           if (req.url !== '/ping') {
             // No key and not a ping test
