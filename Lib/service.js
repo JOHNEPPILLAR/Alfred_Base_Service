@@ -180,6 +180,11 @@ class Service {
       this.restifyServer.use(restify.plugins.queryParser({ mapParams: true }));
       this.restifyServer.use(restify.plugins.fullResponse());
 
+      // Rate limiter
+      this.restifyServer.use(
+        restify.plugins.throttle({ burst: 10, rate: 5, ip: true }),
+      );
+
       // Setup API requiest logging
       this.logger.trace(`${this._traceStack()} - Setup API requiest logging`);
       this.restifyServer.use((req, res, next) => {
