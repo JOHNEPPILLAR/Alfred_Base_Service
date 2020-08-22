@@ -21,7 +21,7 @@
     "node-vault": "^0.9.20",
     "request": "^2.88.2",
     "request-promise": "^4.2.6",
-    "pg": "^8.3.0",
+    "pg": "^8.3.2",
     "pino": "^6.5.1",
     "pino-pretty": "^4.1.0",
     "restify": "^8.5.1",
@@ -31,7 +31,7 @@
     "dateformat": "^3.0.3",
     "geolib": "^3.3.1",
     "apn": "^2.2.0",
-    "snyk": "^1.374.0",
+    "snyk": "^1.381.1",
     "path": "^0.12.7"
   },
   "devDependencies": {
@@ -44,7 +44,7 @@
     "eslint-plugin-jsx-a11y": "^6.3.1",
     "eslint-plugin-prettier": "^3.1.4",
     "eslint-plugin-react": "^7.20.6",
-    "eslint-plugin-react-hooks": "^4.0.8",
+    "eslint-plugin-react-hooks": "^4.1.0",
     "prettier": "^2.0.5"
   }
 }
