@@ -21,12 +21,14 @@ function _ping(req, res, next) {
  * Call another api service with Get
  *
  * @param {String} URL
+ * @param {String} HEADER
  *
  */
-async function _callAPIServiceGet(apiURL) {
+async function _callAPIServiceGet(apiURL, headers) {
   const options = {
     method: 'GET',
     uri: apiURL,
+    headers,
     json: true,
   };
   try {
