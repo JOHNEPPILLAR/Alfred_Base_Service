@@ -105,7 +105,7 @@ function _bonjourScan() {
 
     setTimeout(() => {
       resolve(services);
-    }, 20 * 1000); // Wait 20 seconds then return to caller
+    }, 30 * 1000); // Wait 30 seconds then return to caller
   });
 }
 
