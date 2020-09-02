@@ -2,6 +2,7 @@
  * Import external libraries
  */
 const apn = require('apn');
+const bonjour = require('bonjour')();
 
 /**
  * Send IOS push notification
@@ -95,6 +96,15 @@ async function _sendPushNotification(notificationText) {
   }
 }
 
+async function _bonjourScan() {
+  const services = [];
+  await bonjour.find({}, (service) => {
+    services.push(service);
+  });
+  return services;
+}
+
 module.exports = {
   _sendPushNotification,
+  _bonjourScan,
 };
