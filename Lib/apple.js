@@ -97,10 +97,7 @@ async function _sendPushNotification(notificationText) {
 }
 
 async function _bonjourScan() {
-  const services = [];
-  await bonjour.find({}, (service) => {
-    services.push(service);
-  });
+  const services = await bonjour.find({}, () => {});
   return services;
 }
 
