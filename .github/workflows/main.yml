@@ -19,7 +19,12 @@ jobs:
         with:
           node-version: '${{ steps.nvm.outputs.NVMRC }}'
 
+      - name: Checkout repo
+        if: success()
+        uses: actions/checkout@master
+
       - name: NPM Install
+        if: success()
         run: npm install
         env:
           CI: true
