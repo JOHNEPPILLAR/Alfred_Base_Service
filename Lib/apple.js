@@ -96,16 +96,16 @@ async function _sendPushNotification(notificationText) {
   }
 }
 
-function _bonjourScan() {
-  return new Promise((resolve) => {
-    const services = [];
+function _bonjourScan(deviceName) {
+  return new Promise((resolve, reject) => {
     bonjour.find({}, (service) => {
-      services.push(service);
+      if (service.host.substring(0, service.host.indexOf('.')) === deviceName)
+        resolve(service);
     });
 
     setTimeout(() => {
-      resolve(services);
-    }, 30 * 1000); // Wait 30 seconds then return to caller
+      reject(new Error(`Network scan timeout for: ${deviceName}`));
+    }, 60 * 1000); // 1 minute timeout
   });
 }
 
