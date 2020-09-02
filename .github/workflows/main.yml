@@ -1,8 +1,12 @@
 name: BUILD
 
-on: [push]
+on:
+  push:
+    branches:
+      - master
 
-  node:
+jobs:
+  build:
     name: 📝 Setup node & check packages install ok
     runs-on: ubuntu-latest
     steps:
@@ -20,13 +24,8 @@ on: [push]
         env:
           CI: true
 
-  build:
-    name: 🛠 Build
-    runs-on: ubuntu-latest
-    needs: [node]
-    steps:
-      - uses: actions/checkout@master
       - name: Automated Version Bump
+        if: success()
         uses: phips28/gh-action-bump-version@master
         with:
           tag-prefix: ''
