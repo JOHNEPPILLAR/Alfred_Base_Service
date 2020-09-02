@@ -96,9 +96,17 @@ async function _sendPushNotification(notificationText) {
   }
 }
 
-async function _bonjourScan() {
-  const services = await bonjour.find({}, () => {});
-  return services;
+function _bonjourScan() {
+  return new Promise((resolve) => {
+    const services = [];
+    bonjour.find({}, (service) => {
+      services.push(service);
+    });
+
+    setTimeout(() => {
+      resolve(services);
+    }, 20 * 1000); // Wait 20 seconds then return to caller
+  });
 }
 
 module.exports = {
