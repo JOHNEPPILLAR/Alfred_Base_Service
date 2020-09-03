@@ -19,13 +19,17 @@ async function _openVault() {
     const vault = require('node-vault')(options);
 
     // If vault connection error, exit app
-    if (vault instanceof Error) this._fatal('Vault connection error', true);
+    if (vault instanceof Error) {
+      this.logger.error(`${this._traceStack()} - Vault connection error`);
+      this._fatal(true);
+    }
 
     // Check if vault is sealed
     this.logger.trace(`${this._traceStack()} - Check vault status`);
     const vaultStatus = await vault.status();
     if (vaultStatus.sealed) {
-      this._fatal('Vault sealed', true);
+      this.logger.error(`${this._traceStack()} - Vault sealed`);
+      this._fatal(true);
     }
 
     // Get data from vault
@@ -40,7 +44,8 @@ async function _openVault() {
     this.logger.trace(`${this._traceStack()} - Vault ready`);
   } catch (err) {
     this.logger.error(`${this._traceStack()} - ${err}`);
-    this._fatal('Vault connection error', true);
+    this.logger.error(`${this._traceStack()} - Vault connection error`);
+    this._fatal(true);
   }
 }
 

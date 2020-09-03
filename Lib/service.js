@@ -121,19 +121,24 @@ class Service {
       this.logger.trace(`${this._traceStack()} - Get key`);
       const key = await this._getVaultSecret(`${this.namespace}_key`);
       if (key instanceof Error) {
-        this._fatal('Unable to get key', true);
+        this.logger.error(`${this._traceStack()} - Unable to get key`);
+        this._fatal(true);
       }
 
       this.logger.trace(`${this._traceStack()} - Get certificate`);
       const certificate = await this._getVaultSecret(`${this.namespace}_cert`);
       if (certificate instanceof Error) {
-        this._fatal('Unable to get certificate', true);
+        this.logger.error(`${this._traceStack()} - Unable to get certificate`);
+        this._fatal(true);
       }
 
       this.logger.trace(`${this._traceStack()} - Get client access key`);
       this.apiAccessKey = await this._getVaultSecret('ClientAccessKey');
       if (this.apiAccessKey instanceof Error) {
-        this._fatal('Unable to get api access key', true);
+        this.logger.error(
+          `${this._traceStack()} - Unable to get api access key`,
+        );
+        this._fatal(true);
       }
 
       // Restify server Init
@@ -234,7 +239,8 @@ class Service {
 
       this.logger.trace(`${this._traceStack()} - Finished base restify setup`);
     } catch (err) {
-      this._fatal(err.message, true);
+      this.logger.error(`${this._traceStack()} - ${err.message}`);
+      this._fatal(true);
     }
   }
 
@@ -257,7 +263,8 @@ class Service {
       });
       this.started = true;
     } catch (err) {
-      this._fatal(err.message, true);
+      this.logger.error(`${this._traceStack()} - ${err.message}`);
+      this._fatal(true);
     }
   }
 }
