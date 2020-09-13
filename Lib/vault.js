@@ -1,9 +1,4 @@
 /**
- * Import libraries
- */
-const helper = require('alfred-helper');
-
-/**
  * Create client and open vault
  */
 async function _openVault() {
@@ -11,18 +6,11 @@ async function _openVault() {
     const options = {
       apiVersion: 'v1',
       endpoint: process.env.VAULT_URL,
-      token: process.env.VAULT_TOKEN,
     };
 
     this.logger.trace(`${this._traceStack()} - Connect to vault`);
     // eslint-disable-next-line global-require
-    const vault = require('node-vault')(options);
-
-    // If vault connection error, exit app
-    if (vault instanceof Error) {
-      this.logger.error(`${this._traceStack()} - Vault connection error`);
-      this._fatal(true);
-    }
+    let vault = require('node-vault')(options);
 
     // Check if vault is sealed
     this.logger.trace(`${this._traceStack()} - Check vault status`);
@@ -32,15 +20,48 @@ async function _openVault() {
       this._fatal(true);
     }
 
-    // Get data from vault
-    this.logger.trace(`${this._traceStack()} - Get secret from vault`);
-    const vaultData = await vault.read(
-      `secret/alfred/${process.env.ENVIRONMENT}`,
-    );
-    if (!helper.isEmptyObject(vaultData.data)) {
-      this.logger.trace(`${this._traceStack()} - Store data in memory`);
-      this.vault = vaultData.data;
+    // Login via app role
+    const vaultSession = await vault.approleLogin({
+      role_id: process.env.APP_ROLE_ID,
+      secret_id: process.env.APP_TOKEN,
+    });
+
+    // Login via app role client token
+    options.token = vaultSession.auth.client_token;
+    // eslint-disable-next-line global-require
+    vault = require('node-vault')(options);
+
+    // If vault connection error, exit app
+    if (vault instanceof Error) {
+      this.logger.error(`${this._traceStack()} - Vault connection error`);
+      this._fatal(true);
     }
+
+    // Get data from vault
+    this.logger.trace(`${this._traceStack()} - Get secrets from vault`);
+    const alfredCommonSecrets = await vault.list(`secret/alfred_common`);
+    const secrets = await vault.list(`secret/${this.namespace}`);
+
+    this.logger.trace(`${this._traceStack()} - Store secrets in memory`);
+    let secret;
+    // eslint-disable-next-line no-restricted-syntax
+    for await (const item of alfredCommonSecrets.data.keys) {
+      secret = await vault.read(`secret/alfred_common/${item}`);
+      this.vault[item] = secret.data.data;
+    }
+    // eslint-disable-next-line no-restricted-syntax
+    for await (const item of secrets.data.keys) {
+      secret = await vault.read(`secret/${this.namespace}/${item}`);
+      this.vault[item] = secret.data.data;
+    }
+
+    if (process.env.ENVIRONMENT === 'development') {
+      const key = await vault.read(`secret/localhost/ssl_key`);
+      this.vault.ssl_key = key.data.data;
+      const cert = await vault.read(`secret/localhost/ssl_cert`);
+      this.vault.ssl_cert = cert.data.data;
+    }
+
     this.logger.trace(`${this._traceStack()} - Vault ready`);
   } catch (err) {
     this.logger.error(`${this._traceStack()} - ${err}`);
@@ -58,7 +79,7 @@ async function _openVault() {
 async function _getVaultSecret(key) {
   try {
     // eslint-disable-next-line no-prototype-builtins
-    if (this.vault.hasOwnProperty(key)) {
+    if (this.vault[key]) {
       this.logger.trace(`${this._traceStack()} - Key found`);
       return this.vault[key];
     }

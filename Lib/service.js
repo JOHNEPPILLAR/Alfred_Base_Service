@@ -119,14 +119,14 @@ class Service {
       await this._openVault();
 
       this.logger.trace(`${this._traceStack()} - Get key`);
-      const key = await this._getVaultSecret(`${this.namespace}_key`);
+      const key = await this._getVaultSecret('ssl_key');
       if (key instanceof Error) {
         this.logger.error(`${this._traceStack()} - Unable to get key`);
         this._fatal(true);
       }
 
       this.logger.trace(`${this._traceStack()} - Get certificate`);
-      const certificate = await this._getVaultSecret(`${this.namespace}_cert`);
+      const certificate = await this._getVaultSecret('ssl_cert');
       if (certificate instanceof Error) {
         this.logger.error(`${this._traceStack()} - Unable to get certificate`);
         this._fatal(true);
