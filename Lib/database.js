@@ -1,45 +1,35 @@
 /**
  * Import libraries
  */
-const Influx = require('influx');
+const { MongoClient } = require('mongodb');
 
 /**
  * Connect to database
  */
 // eslint-disable-next-line no-underscore-dangle
 async function _connectToDB() {
-  this.logger.trace(`${this._traceStack()} - Getting database login details`);
+  try {
+    this.logger.trace(`${this._traceStack()} - Get database login details`);
+    const DBUserName = await this._getVaultSecret('DataStoreUser');
+    const DBPassword = await this._getVaultSecret('DataStoreUserPassword');
 
-  const DBServer = process.env.INFLUXDB_SERVER;
-  const DBUserName = process.env.INFLUXDB_USER;
-  const DBUserPassword = process.env.INFLUXDB_PASSWORD;
+    let DBURL = await this._getVaultSecret('DataBaseURL');
+    DBURL = `mongodb://${DBUserName}:${DBPassword}@${DBURL}`;
 
-  if (
-    (typeof DBServer !== 'undefined' && DBServer !== null) ||
-    (typeof DBUserName !== 'undefined' && DBUserName !== null) ||
-    (typeof DBUserPassword !== 'undefined' && DBUserPassword !== null)
-  ) {
-    const err = new Error('DB login details empty');
+    this.logger.trace(`${this._traceStack()} - Connect to database instance`);
+    const client = new MongoClient(DBURL);
+    await client.connect();
+
+    this.logger.trace(`${this._traceStack()} - Make database exists`);
+    await client.db(this.namespace).command({ ping: 1 });
+
+    this.logger.trace(`${this._traceStack()} - Database ready`);
+    return client;
+  } catch (err) {
     this.logger.fatal(err);
     this._fatal(true);
+    return err;
   }
-
-  this.logger.trace(`${this._traceStack()} - Create database object`);
-  const dataClient = new Influx.InfluxDB({
-    host: DBServer,
-    database: this.namespace,
-  });
-
-  this.logger.trace(`${this._traceStack()} - Check if DB exists`);
-  const dbNames = await dataClient.getDatabaseNames();
-  if (!dbNames.includes(this.namespace)) {
-    const err = new Error('DB does not exist');
-    this.logger.fatal(err);
-    this._fatal(true);
-  }
-
-  this.logger.trace(`${this._traceStack()} - Connected to DB`);
-  return dataClient;
 }
 
 module.exports = {

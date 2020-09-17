@@ -60,6 +60,8 @@ async function _openVault() {
       this.vault.ssl_key = key.data.data;
       const cert = await vault.read(`secret/localhost/ssl_cert`);
       this.vault.ssl_cert = cert.data.data;
+      const dataBaseURL = await vault.read(`secret/localhost/DataBaseURL`);
+      this.vault.DataBaseURL = dataBaseURL.data.data;
     }
 
     this.logger.trace(`${this._traceStack()} - Vault ready`);

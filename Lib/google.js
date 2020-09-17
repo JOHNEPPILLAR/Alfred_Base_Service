@@ -81,7 +81,7 @@ async function _kidsAtHomeToday() {
   try {
     const events = await this._getGoogleCal(
       'Girls @ JP',
-      'GoogleAPICalendarID',
+      'SharedGoogleAPICalendarID',
     );
     if (events instanceof Error) return events;
 
