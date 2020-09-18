@@ -20,7 +20,7 @@ async function _connectToDB() {
     const client = new MongoClient(DBURL);
     await client.connect();
 
-    this.logger.trace(`${this._traceStack()} - Make database exists`);
+    this.logger.trace(`${this._traceStack()} - check if database exists`);
     await client.db(this.namespace).command({ ping: 1 });
 
     this.logger.trace(`${this._traceStack()} - Database ready`);
