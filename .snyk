@@ -108,7 +108,7 @@ ignore:
   SNYK-JS-NODEFORGE-598677:
     - apn > node-forge:
         reason: None given
-        expires: '2020-11-10T15:58:35.872Z'
+        expires: '2020-11-29T19:39:26.421Z'
     - googleapis > google-auth-library > gtoken > google-p12-pem > node-forge:
         reason: None given
         expires: '2020-10-02T08:17:38.686Z'
