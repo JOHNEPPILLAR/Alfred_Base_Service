@@ -108,13 +108,17 @@ ignore:
   SNYK-JS-NODEFORGE-598677:
     - apn > node-forge:
         reason: None given
-        expires: '2020-12-07T10:47:41.596Z'
+        expires: '2020-12-14T11:03:33.476Z'
     - googleapis > google-auth-library > gtoken > google-p12-pem > node-forge:
         reason: None given
         expires: '2020-10-02T08:17:38.686Z'
     - googleapis > googleapis-common > google-auth-library > gtoken > google-p12-pem > node-forge:
         reason: None given
         expires: '2020-10-02T08:17:38.686Z'
+  SNYK-JS-AXIOS-1038255:
+    - axios:
+        reason: None given
+        expires: '2020-12-14T11:03:33.476Z'
 # patches apply the minimum changes required to fix a vulnerability
 patch:
   SNYK-JS-LODASH-567746:

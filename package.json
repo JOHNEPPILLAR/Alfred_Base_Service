@@ -32,7 +32,7 @@
     "axios": "^0.21.0",
     "restify": "^8.5.1",
     "restify-router": "^0.6.2",
-    "snyk": "^1.424.4"
+    "snyk": "^1.426.0"
   },
   "devDependencies": {
     "eslint": "~7.13.0",
