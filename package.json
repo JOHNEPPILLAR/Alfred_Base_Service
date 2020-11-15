@@ -17,6 +17,7 @@
     "ajv": "^6.12.6",
     "alfred-helper": "git://github.com/johneppillar/alfred_helper",
     "apn": "^2.2.0",
+    "axios": "^0.21.0",
     "bonjour": "^3.5.0",
     "dateformat": "^3.0.3",
     "dotenv": "^8.2.0",
@@ -29,14 +30,13 @@
     "path": "^0.12.7",
     "pino": "^6.7.0",
     "pino-pretty": "^4.3.0",
-    "axios": "^0.21.0",
     "restify": "^8.5.1",
     "restify-router": "^0.6.2",
-    "snyk": "^1.426.0"
+    "snyk": "^1.427.0"
   },
   "devDependencies": {
-    "eslint": "~7.13.0",
     "babel-eslint": "^10.1.0",
+    "eslint": "~7.13.0",
     "eslint-config-airbnb": "^18.2.1",
     "eslint-config-airbnb-base": "^14.2.1",
     "eslint-config-prettier": "^6.15.0",
