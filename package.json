@@ -10,9 +10,9 @@
     "local": "nodemon test.js"
   },
   "dependencies": {
+    "@parse/node-apn": "^4.0.0",
     "ajv": "^7.0.2",
     "alfred-helper": "git://github.com/johneppillar/alfred_helper",
-    "apn": "^1.6.2",
     "axios": "^0.21.0",
     "bonjour": "^3.5.0",
     "dateformat": "^4.3.1",
