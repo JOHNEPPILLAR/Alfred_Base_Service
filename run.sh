@@ -7,4 +7,3 @@ rm package-lock.json
 ncu -u
 npm install
 npm audit fix --force
-#snyk test

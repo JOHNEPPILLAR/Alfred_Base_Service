@@ -4,14 +4,10 @@
   "description": "ALFRED - Base micro-service",
   "author": "JP",
   "license": "MIT",
-  "snyk": true,
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "local": "nodemon test.js",
-    "snyk-protect": "snyk protect",
-    "prepare": "npm run snyk-protect",
-    "test": "snyk test"
+    "local": "nodemon test.js"
   },
   "dependencies": {
     "ajv": "^7.0.2",
@@ -33,8 +29,7 @@
     "pino": "^6.8.0",
     "pino-pretty": "^4.3.0",
     "restify": "^8.5.1",
-    "restify-router": "^0.6.2",
-    "snyk": "^1.437.2"
+    "restify-router": "^0.6.2"
   },
   "devDependencies": {
     "babel-eslint": "^10.1.0",
@@ -48,6 +43,7 @@
     "eslint-plugin-prettier": "^3.3.0",
     "eslint-plugin-react": "^7.21.5",
     "eslint-plugin-react-hooks": "^4.2.0",
-    "prettier": "^2.2.1"
+    "prettier": "^2.2.1",
+    "snyk": "^1.437.2"
   }
 }
