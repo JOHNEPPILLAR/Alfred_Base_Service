@@ -28,12 +28,12 @@
     "path": "^0.12.7",
     "pino": "^6.8.0",
     "pino-pretty": "^4.3.0",
+    "debug": "4.3.1",
     "restify": "^8.5.1",
     "restify-router": "^0.6.2"
   },
   "devDependencies": {
     "babel-eslint": "^10.1.0",
-    "debug": "4.3.1",
     "eslint": "~7.16.0",
     "eslint-config-airbnb": "^18.2.1",
     "eslint-config-airbnb-base": "^14.2.1",
