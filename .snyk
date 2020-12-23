@@ -118,7 +118,7 @@ ignore:
   SNYK-JS-AXIOS-1038255:
     - axios:
         reason: None given
-        expires: '2020-12-22T20:44:01.839Z'
+        expires: '2021-01-22T17:16:53.597Z'
 # patches apply the minimum changes required to fix a vulnerability
 patch:
   SNYK-JS-LODASH-567746:

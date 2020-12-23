@@ -7,7 +7,8 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "local": "nodemon test.js"
+    "local": "nodemon test.js",
+    "test": "snyk test"
   },
   "dependencies": {
     "@parse/node-apn": "^4.0.0",
