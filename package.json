@@ -20,7 +20,7 @@
     "debug": "4.3.1",
     "dotenv": "^8.2.0",
     "geolib": "^3.3.1",
-    "googleapis": "^67.0.0",
+    "googleapis": "^67.1.0",
     "html-to-text": "^7.0.0",
     "imap-simple": "^5.0.0",
     "moment": "^2.29.1",
@@ -32,7 +32,7 @@
     "pino-pretty": "^4.5.0",
     "restify": "^8.5.1",
     "restify-router": "^0.6.2",
-    "snyk": "^1.456.0"
+    "snyk": "^1.458.0"
   },
   "devDependencies": {
     "babel-eslint": "^10.1.0",
