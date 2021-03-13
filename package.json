@@ -12,7 +12,7 @@
   },
   "dependencies": {
     "@parse/node-apn": "^4.0.0",
-    "ajv": "^7.1.1",
+    "ajv": "^7.2.1",
     "alfred-helper": "git://github.com/johneppillar/alfred_helper",
     "axios": "^0.21.1",
     "bonjour": "^3.5.0",
@@ -24,19 +24,19 @@
     "html-to-text": "^7.0.0",
     "imap-simple": "^5.0.0",
     "moment": "^2.29.1",
-    "mongodb": "3.6.4",
+    "mongodb": "^3.6.4",
     "node-schedule": "^2.0.0",
     "node-vault": "^0.9.21",
     "path": "^0.12.7",
-    "pino": "^6.11.1",
-    "pino-pretty": "^4.7.0",
+    "pino": "^6.11.2",
+    "pino-pretty": "^4.7.1",
     "restify": "^8.5.1",
     "restify-router": "^0.6.2",
-    "snyk": "^1.473.0"
+    "snyk": "^1.485.0"
   },
   "devDependencies": {
     "babel-eslint": "^10.1.0",
-    "eslint": "~7.21.0",
+    "eslint": "~7.22.0",
     "eslint-config-airbnb": "^18.2.1",
     "eslint-config-airbnb-base": "^14.2.1",
     "eslint-config-prettier": "^8.1.0",
