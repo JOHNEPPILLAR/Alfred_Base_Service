@@ -32,7 +32,7 @@
     "pino-pretty": "^4.7.1",
     "restify": "^8.5.1",
     "restify-router": "^0.6.2",
-    "snyk": "^1.485.0"
+    "snyk": "^1.518.0"
   },
   "devDependencies": {
     "babel-eslint": "^10.1.0",
